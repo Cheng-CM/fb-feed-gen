@@ -72,32 +72,28 @@ def sub_video_link(m):
     expr = r'\&amp\;source.+$'
     orig = m.group(1)
     unquoted = urllib.parse.unquote(orig)
-    new = re.sub(expr, '\" target', unquoted)
-    return new
+    return re.sub(expr, '\" target', unquoted)
 
 
 def fix_video_redirect_link(content):
     ''' replace video redirects with direct link '''
 
     expr = r'\/video_redirect\/\?src=(.+)\"\starget'
-    result = re.sub(expr, sub_video_link, content)
-    return result
+    return re.sub(expr, sub_video_link, content)
 
 
 def sub_leaving_link(m):
     expr = r'\&amp\;h.+$'
     orig = m.group(1)
     unquoted = urllib.parse.unquote(orig)
-    new = re.sub(expr, '\" target', unquoted)
-    return new
+    return re.sub(expr, '\" target', unquoted)
 
 
 def fix_leaving_link(content):
     ''' replace leaving fb links with direct link '''
 
     expr = r'https:\/\/lm\.facebook\.com\/l.php\?u\=([a-zA-Z0-9\=\%\&\;\.\-\_]+)\"\s'
-    result = re.sub(expr, sub_leaving_link, content)
-    return result
+    return re.sub(expr, sub_leaving_link, content)
 
 
 def fix_article_links(content):
@@ -105,10 +101,7 @@ def fix_article_links(content):
     v_fix = fix_video_redirect_link(content)
     # fix leaving links
     l_fix = fix_leaving_link(v_fix)
-    # convert links to absolute
-    a_fix = l_fix.replace('href="/', 'href="{0}'.format(base_url))
-
-    return a_fix
+    return l_fix.replace('href="/', 'href="{0}'.format(base_url))
 
 
 def fix_guid_url(url):
@@ -116,8 +109,7 @@ def fix_guid_url(url):
 
     expr = r'([&\?]?(?:type|refid|source)=\d+&?.+$)'
     stripped = re.sub(expr, '', url)
-    guid = urllib.parse.urljoin(base_url, stripped)
-    return guid
+    return urllib.parse.urljoin(base_url, stripped)
 
 
 def build_site_url(username):
@@ -158,9 +150,7 @@ def parse_publish_time(json_string):
             if ('post_context' in page_insights[key].keys()):
 
                 publish_time = page_insights[key]['post_context']['publish_time']
-                date = datetime.datetime.fromtimestamp(publish_time)
-
-                return date
+                return datetime.datetime.fromtimestamp(publish_time)
 
 
 def extract_items(username, contents):
@@ -171,16 +161,16 @@ def extract_items(username, contents):
     main_content = SoupStrainer('div', {'id': 'recent'})
     soup = BeautifulSoup(contents, "lxml", parse_only=main_content)
 
-    items = []
-
     if soup.div:
+        items = []
+
         for item in soup.div.div.div.children:
             item_link = item.find('a', text='Full Story')
             if not item_link:
                 continue  # ignore if no permalink found
 
             url = fix_guid_url(item_link['href'])
-            
+
             # try to parse from json
             date = parse_publish_time(item['data-ft'])
             if date is None:
