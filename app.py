@@ -40,7 +40,7 @@ def generate_feed():
         return 'Invalid username provided'
     # get posts
     site_url = fetch.build_site_url(username)
-    data = fetch.get_remote_data(site_url,False)
+    data = fetch.get_remote_data(site_url)
     items = fetch.extract_items(username, data)
     print(data)
     if (items and len(items) > 0):
