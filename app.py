@@ -59,7 +59,7 @@ def generate_feed():
                      published=post['date'])
         return feed.get_response()
     else:
-        return 'No posts found. Are you sure you put in the correct username?'
+        return data
 
 
 # launch
