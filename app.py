@@ -30,39 +30,36 @@ def generate_feed():
     # app.logger.warning(request.args)
 
     param = request.args.get('username')
-    if param:
-        username = urllib.parse.unquote(param).strip()
-        match, display = fetch.is_valid_username(username)
-
-        if (match):
-            # get posts
-            site_url = fetch.build_site_url(username)
-            data = fetch.get_remote_data(site_url)
-            items = fetch.extract_items(username, data)
-
-            if (items and len(items) > 0):
-                # create feed
-                feed = AtomFeed('{0} FB Posts'.format(display),
-                                subtitle=site_url,
-                                feed_url=request.url,
-                                url=request.url_root)
-
-                for post in items:
-                    feed.add(post['title'],
-                             post['article'],
-                             content_type='html',
-                             author=post['author'],
-                             url=post['url'],
-                             updated=post['date'],
-                             published=post['date'])
-
-                return feed.get_response()
-            else:
-                return 'No posts found. Are you sure you put in the correct username?'
-        else:
-            return 'Invalid username provided'
-    else:
+    if not param:
         return 'No username provided in query string'
+
+    username = urllib.parse.unquote(param).strip()
+    match, display = fetch.is_valid_username(username)
+
+    if not (match):
+        return 'Invalid username provided'
+    # get posts
+    site_url = fetch.build_site_url(username)
+    data = fetch.get_remote_data(site_url)
+    items = fetch.extract_items(username, data)
+    if (items and len(items) > 0):
+        # create feed
+        feed = AtomFeed('{0} FB Posts'.format(display),
+                        subtitle=site_url,
+                        feed_url=request.url,
+                        url=request.url_root)
+
+        for post in items:
+            feed.add(post['title'],
+                     post['article'],
+                     content_type='html',
+                     author=post['author'],
+                     url=post['url'],
+                     updated=post['date'],
+                     published=post['date'])
+        return feed.get_response()
+    else:
+        return 'No posts found. Are you sure you put in the correct username?'
 
 
 # launch

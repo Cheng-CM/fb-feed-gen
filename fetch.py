@@ -160,17 +160,16 @@ def extract_items(username, contents):
 
     main_content = SoupStrainer('div', {'id': 'recent'})
     soup = BeautifulSoup(contents, "lxml", parse_only=main_content)
-
     if soup.div:
         items = []
 
         for item in soup.div.div.div.children:
-            item_link = item.find('a', text='Full Story')
+            item_link = item.find('a', text='完整動態')
+            
             if not item_link:
                 continue  # ignore if no permalink found
 
             url = fix_guid_url(item_link['href'])
-
             # try to parse from json
             date = parse_publish_time(item['data-ft'])
             if date is None:
@@ -202,7 +201,6 @@ def extract_items(username, contents):
             # get event title
             elif 'an event' in article_title:
                 article_title = article_extra.find('h3').get_text(strip=True)
-
 
             items.append({
                 'url': url,
