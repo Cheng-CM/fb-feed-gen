@@ -40,8 +40,9 @@ def generate_feed():
         return 'Invalid username provided'
     # get posts
     site_url = fetch.build_site_url(username)
-    data = fetch.get_remote_data(site_url)
+    data = fetch.get_remote_data(site_url,False)
     items = fetch.extract_items(username, data)
+    print(data)
     if (items and len(items) > 0):
         # create feed
         feed = AtomFeed('{0} FB Posts'.format(display),

@@ -14,7 +14,7 @@ import datetime
 
 # allows us to get mobile version
 user_agent_mobile = 'Mozilla/5.0 (Linux; Android 7.0; SM-G610M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.80 Mobile Safari/537.36'
-user_agent_desktop = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'
+user_agent_desktop = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101 Firefox/94.0'
 
 base_url = 'https://mbasic.facebook.com/'
 max_title_length = 100
@@ -164,7 +164,7 @@ def extract_items(username, contents):
         items = []
 
         for item in soup.div.div.div.children:
-            item_link = item.find('a', text='完整動態')
+            item_link = item.find('a', text='full story')
             
             if not item_link:
                 continue  # ignore if no permalink found
